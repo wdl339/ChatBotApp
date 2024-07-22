@@ -11,16 +11,14 @@ import androidx.compose.foundation.ScrollState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.request.ImageRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.saltedfish.chatbot.chat.Message
+import org.saltedfish.chatbot.chat.Photo
+import org.saltedfish.chatbot.chat.MessageType
 import java.io.ByteArrayOutputStream
-data class Photo(
-    var id :Int=0,
-    val uri: Uri,
-    val request: ImageRequest?
-)
+
 class ChatViewModel : ViewModel() {
 //    private var _inputText: MutableLiveData<String> = MutableLiveData<String>()
 //    val inputText: LiveData<String> = _inputText
@@ -84,7 +82,7 @@ class ChatViewModel : ViewModel() {
 
 
     }
-    fun addMessage(message: Message,remote:Boolean=false) {
+    fun addMessage(message: Message, remote:Boolean=false) {
         if (message.isUser){
                 message.id = _lastId++
             }
@@ -111,7 +109,7 @@ class ChatViewModel : ViewModel() {
                     JNIBridge.run(bot_message.id,message.text,100)
                 }
             }else if (modelType.value ==1){
-                val image_content = if (message.type==MessageType.IMAGE){
+                val image_content = if (message.type== MessageType.IMAGE){
                    val uri =  message.content as Uri?
                     val inputStream = uri?.let { context.contentResolver.openInputStream(it) }
                     inputStream?.readBytes()?:byteArrayOf()
